@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:workshop/bloc/home_bloc.dart';
+import 'package:workshop/repository/http/services/icoded_web_client.dart';
+import 'package:workshop/view/home_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MyApp(IcodedWebClient()));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
+  final webClient;
+
+  MyApp(this.webClient);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    final List<Bloc> blocs = [];
+    final Bloc<IcodedBloc> lessonsBloc = new Bloc<IcodedBloc>((value) {
+      return IcodedBloc(webClient: webClient);
+    });
+    blocs.add(lessonsBloc);
+
+    return BlocProvider(
+      blocs: blocs,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+        ),
+        home: HomeScreen(),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
